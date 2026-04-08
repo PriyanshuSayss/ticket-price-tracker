@@ -1,0 +1,129 @@
+<!-- Full Width Impact Background Wrapper -->
+<div class="relative w-screen -mx-[calc(50vw-50%)] -mt-8 mb-16 h-[500px] sm:h-[600px] flex items-center justify-center overflow-hidden shadow-2xl transition-all duration-700 ease-in-out"
+     [style.background-image]="'linear-gradient(to bottom, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.2) 50%, rgba(15, 23, 42, 1) 100%), url(' + backgroundImages[selectedMode] + ')'"
+     [style.background-size]="'cover'"
+     [style.background-position]="'center'">
+
+  <!-- Loading State Overlay -->
+  <div *ngIf="isLoading" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+    <div class="loading-spinner mb-4 w-12 h-12"></div>
+    <span class="text-white text-xl font-bold tracking-wide drop-shadow-lg">Finding the best prices...</span>
+  </div>
+
+  <!-- Search Form Widget -->
+  <div class="relative z-10 w-full max-w-[1100px] mx-auto px-4 translate-y-8">
+    <div class="text-center mb-10">
+      <h2 class="text-5xl md:text-6xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] mb-3 tracking-tight">Where to next?</h2>
+      <p class="text-xl text-slate-200 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold">Find the cheapest routes instantly.</p>
+    </div>
+
+    <!-- Mode Selectors (Tabs) -->
+    <div class="flex justify-center mb-0">
+      <div class="inline-flex bg-slate-900/70 backdrop-blur-md rounded-t-2xl overflow-hidden shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
+        <button type="button" 
+                [class.bg-blue-600]="searchForm.get('mode')?.value === 'flight'" 
+                [class.text-white]="searchForm.get('mode')?.value === 'flight'" 
+                [class.text-slate-300]="searchForm.get('mode')?.value !== 'flight'" 
+                (click)="searchForm.get('mode')?.setValue('flight')" 
+                class="flex items-center gap-2 px-8 py-4 font-bold transition-all duration-300 hover:bg-blue-500/50">
+          <mat-icon class="text-xl">flight</mat-icon> Flight
+        </button>
+        <button type="button" 
+                [class.bg-blue-600]="searchForm.get('mode')?.value === 'train'" 
+                [class.text-white]="searchForm.get('mode')?.value === 'train'" 
+                [class.text-slate-300]="searchForm.get('mode')?.value !== 'train'" 
+                (click)="searchForm.get('mode')?.setValue('train')" 
+                class="flex items-center gap-2 px-8 py-4 font-bold transition-all duration-300 hover:bg-blue-500/50 border-x border-slate-700/50">
+          <mat-icon class="text-xl">train</mat-icon> Train
+        </button>
+        <button type="button" 
+                [class.bg-blue-600]="searchForm.get('mode')?.value === 'bus'" 
+                [class.text-white]="searchForm.get('mode')?.value === 'bus'" 
+                [class.text-slate-300]="searchForm.get('mode')?.value !== 'bus'" 
+                (click)="searchForm.get('mode')?.setValue('bus')" 
+                class="flex items-center gap-2 px-8 py-4 font-bold transition-all duration-300 hover:bg-blue-500/50">
+          <mat-icon class="text-xl">directions_bus</mat-icon> Bus
+        </button>
+      </div>
+    </div>
+
+    <!-- The Horizontal Bar -->
+    <form *ngIf="!isLoading" [formGroup]="searchForm" (ngSubmit)="onSearch()" class="bg-slate-800/90 backdrop-blur-2xl p-2 sm:p-2.5 rounded-3xl rounded-t-none sm:rounded-t-3xl sm:rounded-tl-none shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-600/50 w-full relative group">
+      
+      <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1">
+        
+        <!-- From -->
+        <div class="relative flex-1 group/input">
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10"><mat-icon>flight_takeoff</mat-icon></div>
+          <input type="text" formControlName="source" placeholder="Leaving from" (input)="onSourceInput($event)" (focus)="onSourceInput($event)" (blur)="hideSuggestions()" class="w-full pl-12 pr-4 py-4 sm:py-5 bg-white/10 hover:bg-white/15 text-white font-bold text-lg placeholder-slate-300 rounded-2xl lg:rounded-r-none lg:rounded-l-2xl border border-transparent focus:bg-slate-700/90 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 transition-all outline-none h-full shadow-inner">
+          <div *ngIf="showSourceSuggestions && sourceSuggestions.length > 0" class="absolute z-50 w-full bg-slate-800/95 backdrop-blur-md border border-slate-600 rounded-xl shadow-2xl mt-2 max-h-60 overflow-y-auto left-0 top-full">
+            <div *ngFor="let city of sourceSuggestions" (click)="selectSourceCity(city)" class="px-4 py-3 hover:bg-blue-600/50 cursor-pointer border-b border-slate-700/50 last:border-b-0 transition-colors text-white font-medium flex items-center gap-3"><mat-icon class="text-slate-400 text-sm">location_on</mat-icon> {{ city }}</div>
+          </div>
+        </div>
+
+        <!-- Swap Icon (Desktop only visual) -->
+        <div class="hidden lg:flex flex-none items-center justify-center -mx-4 z-10" style="margin-top: 2px;">
+           <div class="bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center border-2 border-slate-800 shadow-xl text-slate-300 hover:text-white hover:bg-slate-600 hover:rotate-180 transition-all duration-300 cursor-pointer"><mat-icon style="font-size: 20px; width: 20px; height: 20px; line-height: 20px; display: inline-flex; align-items: center; justify-content: center;">swap_horiz</mat-icon></div>
+        </div>
+
+        <!-- To -->
+        <div class="relative flex-1 group/input">
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10"><mat-icon>flight_land</mat-icon></div>
+          <input type="text" formControlName="destination" placeholder="Going to" (input)="onDestinationInput($event)" (focus)="onDestinationInput($event)" (blur)="hideSuggestions()" 
+                 [style.padding-right]="searchForm.get('destination')?.value ? '16px' : '160px'"
+                 class="w-full pl-12 py-4 sm:py-5 bg-white/10 hover:bg-white/15 text-white font-bold text-lg placeholder-slate-300 rounded-2xl lg:rounded-none lg:border-l lg:border-slate-600/50 border border-transparent focus:bg-slate-700/90 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 transition-all outline-none h-full shadow-inner text-ellipsis overflow-hidden whitespace-nowrap">
+          
+          <!-- Explore Everywhere Badge -->
+          <button type="button" title="Explore Everywhere" *ngIf="!searchForm.get('destination')?.value" (click)="exploreEverywhere(); searchForm.get('destination')?.markAsTouched()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-indigo-500/20 text-indigo-300 hover:text-white hover:bg-indigo-600 border border-indigo-500/30 font-bold text-xs px-2 xl:px-3 py-1.5 rounded-full transition-all duration-300 z-10 flex items-center gap-1 shadow-lg backdrop-blur-sm">
+             <mat-icon style="font-size: 16px; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;">public</mat-icon>
+             <span class="hidden 2xl:inline">Explore Everywhere</span>
+             <span class="hidden xl:inline 2xl:hidden">Everywhere</span>
+          </button>
+
+          <div *ngIf="showDestinationSuggestions && destinationSuggestions.length > 0" class="absolute z-50 w-full bg-slate-800/95 backdrop-blur-md border border-slate-600 rounded-xl shadow-2xl mt-2 max-h-60 overflow-y-auto left-0 top-full">
+            <div *ngFor="let city of destinationSuggestions" (click)="selectDestinationCity(city)" class="px-4 py-3 hover:bg-blue-600/50 cursor-pointer border-b border-slate-700/50 last:border-b-0 transition-colors text-white font-medium flex items-center gap-3"><mat-icon class="text-slate-400 text-sm">location_on</mat-icon> {{ city }}</div>
+          </div>
+        </div>
+
+        <!-- Date -->
+        <div class="relative flex-none lg:w-[180px] group/input">
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10 pointer-events-none lg:hidden"><mat-icon>calendar_today</mat-icon></div>
+          <input type="date" formControlName="date" [min]="minDate" class="w-full pl-12 lg:pl-4 pr-4 py-4 sm:py-5 bg-white/10 hover:bg-white/15 text-white font-bold text-lg placeholder-slate-300 rounded-2xl lg:rounded-none lg:border-l lg:border-slate-600/50 border border-transparent focus:bg-slate-700/90 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 transition-all outline-none h-full cursor-pointer appearance-none date-input-custom lg:text-center shadow-inner">
+        </div>
+
+        <!-- Class (Only if flight/train) -->
+        <div class="relative flex-none lg:w-[160px] group/input" *ngIf="availableClasses.length > 0">
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center text-slate-400 group-focus-within/input:text-blue-400 transition-colors z-10 pointer-events-none lg:hidden"><mat-icon>chair</mat-icon></div>
+          <select formControlName="class" class="w-full pl-12 lg:pl-4 pr-10 py-4 sm:py-5 bg-white/10 hover:bg-white/15 text-white font-bold text-lg placeholder-slate-300 rounded-2xl lg:rounded-none lg:border-l lg:border-slate-600/50 border border-transparent focus:bg-slate-700/90 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 transition-all outline-none h-full cursor-pointer appearance-none lg:text-center shadow-inner">
+            <option value="" class="bg-slate-800 text-white font-semibold">Any Class</option>
+            <option *ngFor="let classOption of availableClasses" [value]="classOption.id" class="bg-slate-800 text-white font-semibold">{{ classOption.name }}</option>
+          </select>
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-slate-400 pointer-events-none"><mat-icon>expand_more</mat-icon></div>
+        </div>
+
+        <!-- Search Button -->
+        <button type="submit" [disabled]="searchForm.invalid || isSubmitting" class="py-4 sm:py-5 px-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xl rounded-2xl lg:rounded-r-2xl lg:rounded-l-none border border-transparent transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+           Search
+        </button>
+      </div>
+
+    </form>
+    
+    <!-- Inline Errors -->
+    <div class="flex flex-wrap gap-4 mt-4 px-4 justify-center" *ngIf="!isLoading">
+        <div *ngIf="searchForm.get('source')?.invalid && searchForm.get('source')?.touched" class="text-red-300 text-sm font-bold bg-red-900/60 backdrop-blur-sm px-4 py-1.5 rounded-full border border-red-500/50 shadow-lg flex items-center gap-2"><mat-icon class="text-sm">error_outline</mat-icon> Leaving from city is required</div>
+        <div *ngIf="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched" class="text-red-300 text-sm font-bold bg-red-900/60 backdrop-blur-sm px-4 py-1.5 rounded-full border border-red-500/50 shadow-lg flex items-center gap-2"><mat-icon class="text-sm">error_outline</mat-icon> Going to city is required</div>
+        <div *ngIf="searchForm.get('date')?.invalid && searchForm.get('date')?.touched" class="text-red-300 text-sm font-bold bg-red-900/60 backdrop-blur-sm px-4 py-1.5 rounded-full border border-red-500/50 shadow-lg flex items-center gap-2"><mat-icon class="text-sm">error_outline</mat-icon> Valid date required</div>
+    </div>
+  </div>
+</div>
+
+<!-- Popular Routes Wrapper Box underneath -->
+<div class="max-w-4xl mx-auto -mt-4 mb-10 px-4 hidden sm:block relative z-10">
+  <div class="flex flex-wrap items-center justify-center gap-3">
+    <span class="text-sm text-slate-500 font-black uppercase tracking-widest mr-2">Top Routes</span>
+    <button type="button" *ngFor="let route of popularRoutes" (click)="setPopularRoute(route)" style="display: flex; align-items: center;" class="gap-1 px-5 py-2 text-sm bg-slate-800/80 hover:bg-slate-700/90 backdrop-blur-md text-slate-300 rounded-full transition-all duration-300 font-bold border border-slate-600/60 hover:border-blue-400/60 hover:text-white shadow-lg hover:shadow-blue-500/20">
+      <span style="display: block; margin-top: 2px;">{{ route.source }}</span> <mat-icon style="font-size: 16px; width: 16px; height: 16px; line-height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px;" class="opacity-60">arrow_forward</mat-icon> <span style="display: block; margin-top: 2px;">{{ route.destination }}</span>
+    </button>
+  </div>
+</div>

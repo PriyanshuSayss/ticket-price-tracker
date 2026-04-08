@@ -1,0 +1,148 @@
+<!-- Modern Premium Navigation Header -->
+<header class="fixed top-0 inset-x-0 z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-xl border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer hover:opacity-90 transition-opacity" (click)="selectedTab = 0">
+        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.5)] border border-white/10 flex items-center justify-center">
+          <mat-icon class="text-white text-[22px] w-[22px] h-[22px] leading-none">public</mat-icon>
+        </div>
+        <div class="flex flex-col justify-center">
+          <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 tracking-tight leading-none">NexTravel.</h1>
+          <p class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mt-1">Global Portal</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links (Desktop) -->
+      <nav class="hidden md:flex items-center bg-slate-800/40 p-1.5 rounded-2xl border border-white/5 shadow-inner backdrop-blur-md">
+        <button
+          [ngClass]="{
+            'bg-blue-600 text-white shadow-md': selectedTab === 0,
+            'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50': selectedTab !== 0
+          }"
+          (click)="selectedTab = 0"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-300">
+          <mat-icon class="text-[18px] w-[18px] h-[18px] leading-none">search</mat-icon>
+          Explore
+        </button>
+        
+        <button
+          [disabled]="!searchResults.length"
+          [ngClass]="{
+            'bg-blue-600 text-white shadow-md': selectedTab === 1,
+            'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50': selectedTab !== 1 && searchResults.length,
+            'opacity-40 cursor-not-allowed': !searchResults.length
+          }"
+          (click)="selectedTab = 1"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-300">
+          <mat-icon class="text-[18px] w-[18px] h-[18px] leading-none">view_list</mat-icon>
+          Results
+        </button>
+        
+        <button
+          [ngClass]="{
+            'bg-blue-600 text-white shadow-md': selectedTab === 2,
+            'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50': selectedTab !== 2
+          }"
+          (click)="selectedTab = 2"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 relative group">
+          <mat-icon class="text-[18px] w-[18px] h-[18px] leading-none text-emerald-400 group-hover:animate-pulse">show_chart</mat-icon>
+          Live Feed
+          <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-slate-800 animate-pulse"></div>
+        </button>
+      </nav>
+
+      <!-- User Profile Action / Mobile Menu Button -->
+      <div class="flex items-center space-x-3">
+        <button class="hidden md:flex items-center justify-center p-2.5 rounded-xl bg-slate-800/80 border border-white/5 text-slate-300 hover:text-white hover:bg-slate-700 transition-all duration-300">
+          <mat-icon class="text-[20px] w-[20px] h-[20px] leading-none">person_outline</mat-icon>
+        </button>
+        <button class="md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+<div class="h-20"></div> <!-- Spacer to prevent content from hiding under fixed navbar -->
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Tab Navigation for Mobile -->
+  <div class="md:hidden mb-6">
+    <div class="flex space-x-1 bg-slate-800/50 p-1 rounded-lg border border-slate-600/50">
+      <button
+        [class.active]="selectedTab === 0"
+        (click)="selectedTab = 0"
+        class="tab-mobile">
+        <mat-icon class="text-sm mr-1">search</mat-icon>
+        Search
+      </button>
+      <button
+        [class.active]="selectedTab === 1"
+        [class.disabled]="!searchResults.length"
+        (click)="selectedTab = 1"
+        class="tab-mobile">
+        <mat-icon class="text-sm mr-1">list</mat-icon>
+        Results
+      </button>
+      <button
+        [class.active]="selectedTab === 2"
+        (click)="selectedTab = 2"
+        class="tab-mobile">
+        <mat-icon class="text-sm mr-1">track_changes</mat-icon>
+        Tracking
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="animate-fade-in">
+    <!-- Search Tab (Hero Landing Page) -->
+    <div *ngIf="selectedTab === 0" class="w-full">
+      <app-search-form (search)="onSearch($event)"></app-search-form>
+      
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="text-center py-8">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <p class="text-slate-300 mt-4">Searching for tickets...</p>
+      </div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="bg-red-900/50 border border-red-500/50 rounded-xl p-4 text-center mt-6 max-w-4xl mx-auto">
+        <p class="text-red-300">{{ errorMessage }}</p>
+        <button (click)="clearError()" class="mt-2 text-red-400 hover:text-red-300 underline">Dismiss</button>
+      </div>
+    </div>
+
+    <!-- Results Tab -->
+    <div *ngIf="selectedTab === 1" class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold text-white">Search Results</h2>
+        <button
+          *ngIf="searchResults.length > 0"
+          (click)="selectedTab = 0"
+          class="btn-secondary">
+          <mat-icon class="mr-2">arrow_back</mat-icon>
+          New Search
+        </button>
+      </div>
+      <app-results
+        [tickets]="searchResults"
+        [searchCriteria]="currentSearchCriteria"
+        (trackRoute)="onTrackRoute($event)">
+      </app-results>
+    </div>
+
+    <!-- Tracking Tab -->
+    <div *ngIf="selectedTab === 2" class="space-y-6">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-white mb-2">Price Tracking</h2>
+        <p class="text-slate-300">Monitor price changes for your favorite routes</p>
+      </div>
+      <app-tracking></app-tracking>
+    </div>
+  </div>
+</main>

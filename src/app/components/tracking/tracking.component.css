@@ -1,0 +1,98 @@
+/* Status Badges */
+.status-active {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #166534;
+  border: 1px solid #86efac;
+  box-shadow: 0 1px 3px 0 rgba(22, 101, 52, 0.1);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.status-inactive {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-radius: 9999px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  border: 1px solid #e5e7eb;
+}
+
+/* Route Headers */
+.route-header {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  min-width: 0;
+}
+
+/* Chart Container */
+.chart-container {
+  height: 16rem;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+/* Animation Classes */
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .chart-container {
+    height: 8rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Hover Effects */
+.card:hover {
+  transform: translateY(-4px);
+  transition: transform 0.2s;
+}
+
+/* Loading States */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.loading-content {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}

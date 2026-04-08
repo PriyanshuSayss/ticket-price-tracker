@@ -1,0 +1,111 @@
+/* Mode Selection Buttons */
+.mode-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: none;
+  background: none;
+  white-space: nowrap;
+  min-width: fit-content;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.mode-button.active {
+  background-color: white;
+  color: #2563eb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.mode-button:not(.active) {
+  color: #4b5563;
+}
+
+.mode-button:not(.active):hover {
+  color: #111827;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
+}
+
+/* Form Layout */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Submit Button */
+.btn-primary {
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  padding: 14px 32px;
+  border-radius: 30px;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  min-width: fit-content;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0px 8px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  background: linear-gradient(90deg, #9ca3af, #6b7280);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mode-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    gap: 6px;
+  }
+
+  .btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* Focus States */
+.input-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animation for form transitions */
+.form-transition {
+  transition: all 0.3s ease-in-out;
+}

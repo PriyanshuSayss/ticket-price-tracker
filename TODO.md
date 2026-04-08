@@ -1,0 +1,5 @@
+- [x] Add word-wrap and overflow handling to results.component.css to prevent text overlapping in ticket cards (city names, prices, timings)
+- [x] Add text overflow handling to tracking.component.css for long route names
+- [x] Ensure flex items can shrink properly with min-width: 0
+- [x] Test responsive design on small screens
+- [x] Run the app to verify fixes
