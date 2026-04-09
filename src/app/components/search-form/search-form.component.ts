@@ -133,8 +133,11 @@ export class SearchFormComponent implements OnInit {
    * Hides suggestions when clicking outside
    */
   hideSuggestions() {
-    this.showSourceSuggestions = false;
-    this.showDestinationSuggestions = false;
+    // Small delay to allow click events to register on the suggestions list items
+    setTimeout(() => {
+      this.showSourceSuggestions = false;
+      this.showDestinationSuggestions = false;
+    }, 200);
   }
 
   constructor(private fb: FormBuilder, private ticketService: TicketService) {
